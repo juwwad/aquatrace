@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>AquaTrace</title>
+<link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="app-header">
+      <div class="brand">
+        <span class="brand-drop">💧</span>
+        <h1>AquaTrace</h1>
+      </div>
+      <p class="subtitle">Your AI water footprint</p>
+    </header>
+
+    <div class="visual-stage">
+      <div class="container-wrap" id="containerWrap">
+
+        <!-- Drinking glass: 0–250ml -->
+        <div class="vessel glass" id="vessel-glass">
+          <div class="glass-body">
+            <div class="water" id="water-glass"><div class="wave"></div></div>
+          </div>
+        </div>
+
+        <!-- Water bottle: 250–999ml -->
+        <div class="vessel bottle" id="vessel-bottle" style="display:none">
+          <div class="bottle-cap"></div>
+          <div class="bottle-neck"></div>
+          <div class="bottle-body">
+            <div class="water" id="water-bottle"><div class="wave"></div></div>
+          </div>
+        </div>
+
+        <!-- 1L carafe/jug: 1000–3784ml -->
+        <div class="vessel jug" id="vessel-jug" style="display:none">
+          <div class="jug-handle"></div>
+          <div class="jug-spout"></div>
+          <div class="jug-body">
+            <div class="water" id="water-jug"><div class="wave"></div></div>
+          </div>
+        </div>
+
+        <!-- Gallon jug: 3785ml+ -->
+        <div class="vessel gallon" id="vessel-gallon" style="display:none">
+          <div class="gallon-handle"></div>
+          <div class="gallon-cap"></div>
+          <div class="gallon-body">
+            <div class="water" id="water-gallon"><div class="wave"></div></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="stats">
+      <div class="stat-main">
+        <span class="stat-value" id="totalMl">0</span>
+        <span class="stat-unit">ml</span>
+      </div>
+      <div class="stat-sub" id="containerLabel">Drinking Glass</div>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <span class="stat-card-value" id="totalQueries">0</span>
+        <span class="stat-card-label">Prompts sent</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-card-value" id="totalTokens">0</span>
+        <span class="stat-card-label">Tokens estimated</span>
+      </div>
+    </div>
+
+    <div class="site-breakdown" id="siteBreakdown"></div>
+
+    <div class="mode-toggle" id="modeToggle">
+      <button class="mode-btn" data-mode="direct" id="modeDirectBtn">Direct Cooling</button>
+      <button class="mode-btn" data-mode="comprehensive" id="modeComprehensiveBtn">Full Lifecycle</button>
+    </div>
+    <p class="mode-caption" id="modeCaption"></p>
+
+    <div class="footer-row">
+      <label class="ml-config" for="mlPer1000Tokens">
+        1000 tokens ≈
+        <input type="number" id="mlPer1000Tokens" min="0.1" max="2000" step="0.5" value="146" />
+        ml
+      </label>
+      <button class="btn-reset" id="resetBtn" title="Reset all stats">Reset</button>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
