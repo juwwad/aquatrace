@@ -89,12 +89,13 @@
         ml
       </label>
       <div class="footer-actions">
-        <button class="btn-export" id="exportBtn" title="Export data">Export Data</button>
-        <button class="btn-import" id="importBtn" title="Import data">Import Data</button>
+        <button class="btn-export" id="exportBtn" title="Export data"><span class="btn-icon">📤</span><span class="btn-text">Export</span></button>
+        <button class="btn-import" id="importBtn" title="Import data"><span class="btn-icon">📥</span><span class="btn-text">Import</span></button>
         <input type="file" id="importFile" accept="application/json" style="display:none" />
-        <button class="btn-reset" id="resetBtn" title="Reset all stats">Reset</button>
+        <button class="btn-reset" id="resetBtn" title="Reset all stats"><span class="btn-icon">↺</span><span class="btn-text">Reset</span></button>
       </div>
     </div>
+    <div class="sync-info"><small id="lastSync">Backup: —</small></div>
   </div>
 
   <script src="popup.js"></script>

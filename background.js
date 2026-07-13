@@ -39,6 +39,12 @@ async function syncBackup(state) {
       if (state[k] !== undefined) toSync[k] = state[k];
     }
     await chrome.storage.sync.set(toSync);
+    // record a lightweight timestamp so the popup can show when the last backup occurred
+    try {
+      await chrome.storage.sync.set({ lastSyncAt: Date.now() });
+    } catch (e) {
+      // ignore timestamp set errors
+    }
   } catch (e) {
     // Ignore sync errors (quota, disabled sync, etc.)
   }

@@ -140,6 +140,20 @@ async function refresh() {
   if (document.activeElement !== mlInput) {
     mlInput.value = data.mlPer1000Tokens ?? 146;
   }
+  // show last-sync timestamp if available
+  try {
+    const sync = await chrome.storage.sync.get('lastSyncAt');
+    const el = document.getElementById('lastSync');
+    if (sync && sync.lastSyncAt) {
+      const d = new Date(sync.lastSyncAt);
+      el.textContent = `Backup: ${d.toLocaleString()}`;
+    } else {
+      el.textContent = 'Backup: not available';
+    }
+  } catch (e) {
+    const el = document.getElementById('lastSync');
+    if (el) el.textContent = 'Backup: not available';
+  }
 }
 
 function init() {
@@ -202,6 +216,7 @@ function init() {
       // Also attempt to sync the imported state so reinstalls preserve it
       try {
         await chrome.storage.sync.set(parsed);
+        await chrome.storage.sync.set({ lastSyncAt: Date.now() });
       } catch (e) {
         // ignore sync errors
       }

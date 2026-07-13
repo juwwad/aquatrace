@@ -444,3 +444,67 @@ body {
 .btn-reset:active {
   transform: scale(0.94);
 }
+
+/* Footer action group for export/import paired with reset */
+.footer-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-export,
+.btn-import {
+  border: 1px solid var(--glass-border);
+  background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+  color: var(--text-primary);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 6px 10px;
+  border-radius: 9px;
+  cursor: pointer;
+  transition: transform 0.12s ease, background 0.12s ease, box-shadow 0.12s ease;
+}
+
+.btn-export:hover,
+.btn-import:hover {
+  background: rgba(255, 255, 255, 0.36);
+}
+
+.btn-export:active,
+.btn-import:active {
+  transform: scale(0.97);
+}
+
+/* Button icon + text layout */
+.btn-icon {
+  display: inline-block;
+  margin-right: 6px;
+  font-size: 13px;
+  line-height: 1;
+}
+.btn-text { display: inline-block; }
+
+/* Last-sync small note */
+.sync-info {
+  margin-top: 8px;
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+/* Responsive tweaks for narrow popup windows */
+@media (max-width: 320px) {
+  body { width: 300px; }
+  .container-wrap { height: 120px; }
+  .footer-actions { gap: 6px; }
+  .btn-export, .btn-import, .btn-reset { padding: 6px 8px; font-size: 10px; }
+  .stat-value { font-size: 30px; }
+}
+
+.btn-export {
+  color: var(--accent);
+  border-color: rgba(37,99,235,0.14);
+}
+
+.btn-import {
+  color: var(--text-primary);
+}
