@@ -77,3 +77,18 @@ This extension is built for Chromium-based browsers such as Chrome, Edge, Brave,
 - If the extension does not appear, make sure you selected the folder that contains manifest.json.
 - If the popup is empty, refresh the page and try again.
 - If you update the files, click the Reload button on the extension card in the Extensions page.
+
+## Data persistence (retain data across reinstalls)
+
+AquaTrace stores usage in `chrome.storage.local` by default. To preserve data across extension reinstallations or across devices, AquaTrace now supports two mechanisms:
+
+- Automatic sync backup: when possible, the extension writes a small backup of the state to `chrome.storage.sync`. If you sign into Chrome/Edge and have sync enabled, the extension will restore data from sync when installed again.
+- Manual export/import: the popup has `Export Data` and `Import Data` buttons. Use `Export Data` to download a JSON backup and `Import Data` to restore it. Importing will attempt to write both `chrome.storage.local` and `chrome.storage.sync` (if available).
+
+Recommendations:
+
+- Sign into your browser and enable profile sync to let the automatic sync backup work.
+- Periodically use `Export Data` to keep a local backup you control.
+- If you reinstall the extension, open the popup and it will automatically attempt to restore from synced data; otherwise use `Import Data` with your backup JSON.
+
+Privacy note: backups contain only aggregated counters and settings (no prompt text) and are stored in your browser profile when using `chrome.storage.sync`.

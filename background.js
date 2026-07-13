@@ -10,10 +10,47 @@ const DEFAULT_STATE = {
   bySite: {}
 };
 
+const ALL_KEYS = Object.keys(DEFAULT_STATE);
+
+async function restoreFromSync() {
+  try {
+    const syncData = await chrome.storage.sync.get(ALL_KEYS);
+    const hasSync = Object.keys(syncData).length > 0;
+    if (!hasSync) return;
+
+    // Merge sync values into local storage so data survives reinstalls
+    const toSet = {};
+    for (const k of ALL_KEYS) {
+      if (syncData[k] !== undefined) toSet[k] = syncData[k];
+    }
+    if (Object.keys(toSet).length) {
+      await chrome.storage.local.set(toSet);
+    }
+  } catch (e) {
+    // Ignore sync errors (quota, disabled sync, etc.)
+  }
+}
+
+async function syncBackup(state) {
+  try {
+    // Only send small payloads; our state is small and should fit quota
+    const toSync = {};
+    for (const k of ALL_KEYS) {
+      if (state[k] !== undefined) toSync[k] = state[k];
+    }
+    await chrome.storage.sync.set(toSync);
+  } catch (e) {
+    // Ignore sync errors (quota, disabled sync, etc.)
+  }
+}
+
 chrome.runtime.onInstalled.addListener(async () => {
-  const existing = await chrome.storage.local.get(Object.keys(DEFAULT_STATE));
+  // Attempt to restore a sync-backed copy first so data survives reinstall
+  await restoreFromSync();
+
+  const existing = await chrome.storage.local.get(ALL_KEYS);
   const toSet = {};
-  for (const key of Object.keys(DEFAULT_STATE)) {
+  for (const key of ALL_KEYS) {
     if (existing[key] === undefined) toSet[key] = DEFAULT_STATE[key];
   }
   if (Object.keys(toSet).length) {
@@ -23,7 +60,8 @@ chrome.runtime.onInstalled.addListener(async () => {
 });
 
 chrome.runtime.onStartup.addListener(() => {
-  updateBadge();
+  // Sync restore on startup as well
+  restoreFromSync().then(updateBadge);
 });
 
 async function updateBadge() {
@@ -52,6 +90,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
       await chrome.storage.local.set({ totalQueries, totalTokens, totalMl, bySite });
       await updateBadge();
+      // Also back up new state to sync so it can be restored after reinstall
+      syncBackup({ totalQueries, totalTokens, totalMl, bySite, mlPer1000Tokens, waterMode: data.waterMode });
       sendResponse({ ok: true, totalQueries, totalTokens, totalMl });
     })();
     return true; // keep the message channel open for the async response
@@ -61,6 +101,11 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     (async () => {
       await chrome.storage.local.set({ totalQueries: 0, totalTokens: 0, totalMl: 0, bySite: {} });
       await updateBadge();
+      try {
+        await chrome.storage.sync.set({ totalQueries: 0, totalTokens: 0, totalMl: 0, bySite: {} });
+      } catch (e) {
+        // ignore
+      }
       sendResponse({ ok: true });
     })();
     return true;

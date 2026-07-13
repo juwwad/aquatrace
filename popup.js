@@ -167,6 +167,53 @@ function init() {
     refresh();
   });
 
+  // Export / Import handlers
+  const exportBtn = document.getElementById('exportBtn');
+  const importBtn = document.getElementById('importBtn');
+  const importFile = document.getElementById('importFile');
+
+  exportBtn.addEventListener('click', async () => {
+    const data = await chrome.storage.local.get();
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'aquatrace-backup.json';
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+
+  importBtn.addEventListener('click', () => importFile.click());
+
+  importFile.addEventListener('change', async (e) => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+    try {
+      const text = await file.text();
+      const parsed = JSON.parse(text);
+      // Basic validation: must include numeric totals
+      if (typeof parsed.totalMl !== 'number' || typeof parsed.totalQueries !== 'number') {
+        alert('Invalid backup file.');
+        return;
+      }
+      const confirmed = window.confirm('Importing will overwrite current stats. Continue?');
+      if (!confirmed) return;
+      await chrome.storage.local.set(parsed);
+      // Also attempt to sync the imported state so reinstalls preserve it
+      try {
+        await chrome.storage.sync.set(parsed);
+      } catch (e) {
+        // ignore sync errors
+      }
+      refresh();
+      alert('Import complete.');
+    } catch (err) {
+      alert('Failed to import file: ' + err.message);
+    } finally {
+      importFile.value = '';
+    }
+  });
+
   chrome.storage.onChanged.addListener((changes, area) => {
     if (area !== 'local') return;
     refresh();

@@ -3,12 +3,20 @@
   "name": "AquaTrace — AI Water Tracker",
   "version": "1.0.0",
   "description": "Tracks the estimated water footprint of your AI conversations across ChatGPT, Gemini, and Claude.",
-  "permissions": ["storage"],
+  "permissions": [
+    "storage"
+  ],
   "host_permissions": [
     "https://chatgpt.com/*",
     "https://chat.openai.com/*",
     "https://gemini.google.com/*",
-    "https://claude.ai/*"
+    "https://claude.ai/*",
+    "https://aistudio.google.com/*",
+    "https://copilot.microsoft.com/*",
+    "https://www.perplexity.ai/*",
+    "https://chat.deepseek.com/*",
+    "https://www.meta.ai/*",
+    "https://grok.com/*"
   ],
   "background": {
     "service_worker": "background.js"
@@ -28,9 +36,17 @@
         "https://chatgpt.com/*",
         "https://chat.openai.com/*",
         "https://gemini.google.com/*",
-        "https://claude.ai/*"
+        "https://claude.ai/*",
+        "https://aistudio.google.com/*",
+        "https://copilot.microsoft.com/*",
+        "https://www.perplexity.ai/*",
+        "https://chat.deepseek.com/*",
+        "https://www.meta.ai/*",
+        "https://grok.com/*"
       ],
-      "js": ["content.js"],
+      "js": [
+        "content.js"
+      ],
       "run_at": "document_idle",
       "all_frames": false
     }
